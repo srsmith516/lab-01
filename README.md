@@ -1,4 +1,4 @@
-# Intro to Software Construction Tooling
+# Part 1: Intro to Software Construction Tooling
 
 > Author(s): Andrew Lvovsky ([@borninla](https://github.com/borninla)) and Brian Crites ([@brrcrites](https://github.com/brrcrites))
 
@@ -506,11 +506,8 @@ $ git push
 This will push all the commits you've made since your last push assuming there haven't been any changes to the remote GitHub repo that your local Git doesn't know about. If there have been you will need to "pull" and "merge" those changes into your local repository, but we will cover those steps in a future lab when we cover Git and GitHub in more depth.
 
 
-## Submission 1
 
-None of the labs or assignments for this course require direct submissions but will be graded based on your GitHub repositories. Projects will be graded based on specific tags (we will explain tags in a future lab) and labs will be graded based on your last GitHub commit and a demonstration of your code to your TA. Since you have just pushed your code to GitHub you now need to demonstrate that you have completed the lab to the TA.
-
-## Unit Testing in C++
+# Part 2: Unit Testing in C++
 
 Testing is a very important part of the software development process that is often overlooked in university curriculum. We know because **Google told us specifically it was something they found lacking in their incoming interns and new grad hires**, so we suggest you take this unit seriously along with the testing you will be doing for your projects (and add it to your resume when you apply for internships).
 

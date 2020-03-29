@@ -505,6 +505,235 @@ $ git push
 
 This will push all the commits you've made since your last push assuming there haven't been any changes to the remote GitHub repo that your local Git doesn't know about. If there have been you will need to "pull" and "merge" those changes into your local repository, but we will cover those steps in a future lab when we cover Git and GitHub in more depth.
 
-## Submission
+
+## Submission 1
 
 None of the labs or assignments for this course require direct submissions but will be graded based on your GitHub repositories. Projects will be graded based on specific tags (we will explain tags in a future lab) and labs will be graded based on your last GitHub commit and a demonstration of your code to your TA. Since you have just pushed your code to GitHub you now need to demonstrate that you have completed the lab to the TA.
+
+## Unit Testing in C++
+
+Testing is a very important part of the software development process that is often overlooked in university curriculum. We know because **Google told us specifically it was something they found lacking in their incoming interns and new grad hires**, so we suggest you take this unit seriously along with the testing you will be doing for your projects (and add it to your resume when you apply for internships).
+
+Because C++ is a compiled language, it is fairly difficult to create unit tests for individual classes and functions because they need their own main for executing the test combined with the function or class being tested. Rather than try and invent our own testing paradigms/frameworks, we are going to use the fairly standard [Google Unit Test Framework](https://github.com/google/googletest) (gtest) for C++. While it's tempting to think we are using this because Google told us we needed more testing in the curriculum, it is actually because the author ([@brrcrites](https://github.com/brrcrites)) uses it in his research, and it has become the de-facto standard testing framework for C++ code.
+
+In this lab, we will use the c-echo program as the test example. Our c-echo program prints a space after every word in `argc`. 
+
+```c++
+#include <iostream>
+
+int main(int argv, char** argc) {
+    // Skip the first argc index because its the program
+    for(int i = 1; i < argv; i++) {
+        std::cout << argc[i];
+        // Print a whitespace after all but the last iteration
+        if(i < argv - 1) {
+            std::cout << " ";
+        }
+    }
+    std::cout << std::endl;
+}
+```
+
+Compile this program as `c-echo` (`g++ c-echo.cpp -o c-echo`) and test it with some different inputs to verify that it prints whatever is passed to it as command line input.
+
+Since we are going to write unit tests for this program we first want to break the project up into different modules. This is necessary in our case because currently we have our program implmeneted directly in main but the google test framework will require us to write a special main (covered below) used by them to create a test executable which we will run to test our code. Note that for this small example we will only be creating a single function as our module for testing, but the principles are the same if you have a single module or hundreds. Lets modify our c-echo.cpp file, and rename it to c-echo.h. If we rename and then modify c-echo.cpp without telling git that we are going to rename it, then it's going to think we removed one file and created an entirely new one. This can make the commits very hard to read (and review very difficult), so we should rename the file using git itself:
+
+```
+$ git mv c-echo.cpp c-echo.h
+```
+
+If you run `git status` you should see that git has logged the file rename. Now, lets turn c-echo.h into a function rather than just a main:
+
+```c++
+#include <iostream>
+
+std::string echo(int length, char** chars) {
+    std::string ret = "";
+    for(int i = 1; i < length; i++) {
+        ret += chars[i];
+        if(i < length - 1) {
+            ret += " ";
+        }
+    }
+    ret += "\n";
+    return ret;
+}
+```
+
+Notice that now instead of printing directly, we are generating a string which we will print to standard output in the main. The code has been slightly modified to allow it to return a string, for example it adds a `\n` character to the end rather than the `std::endl` it used before, but the functionality is the same. Now, let's create a new main.cpp file so we can run the program like we did before:
+
+```c++
+#include "c-echo.h"
+
+int main(int argv, char** argc) {
+    std::cout << echo(argv, argc);
+}
+```
+
+One of the benefits of writing unit tests is that it forces you to think about how to subdivide a problem across a number of different classes and functions, because those become your testable units. The main itself cannot be unit tested since a different main will be needed to compile the unit tests. This is why in most large programming projects the only thing the main does is call a different function or create an object and call a method on that object.
+
+## CMake
+
+Before we can start actually writing the unit tests, there are a few changes we'll need to make to our repository. The first issue is that in order to use gtest is we'll need to change from hand compiling our program to using a build system. Gtest doesn't support the basic make build system, but instead supports CMake. As with the last lab, start by creating the following CMakeLists.txt file:
+
+```
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+
+ADD_EXECUTABLE(c-echo
+    main.cpp
+)
+```
+
+Now, run `cmake3 .` followed by `make` to build the executable.
+
+Now that we've switched the build system, go ahead and run a few test commands on the new executable and re-run your `array.sh` file to make sure its still functioning as we expected. Since we made what could be a major breaking change to the program, its a good idea to make sure we test the changes to verify it's still working as expected before we make any new changes. We should also update our `.gitignore` file to ignore the generated build files:
+
+```
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+c-echo
+```
+
+Now that we have a function that we can create unit tests for specifically, and can use CMake to build it, we can now add the gtest framework and start writing our tests.
+
+> Make a commit here with CMakeLists.txt, c-echo.h, main.cpp, and the updated .gitignore.
+
+## Git Submodules
+
+We could download the gtest source code and include it in our git repository, but the gtest code is already has its own open source repository on GitHub. Instead of creating copies of the gtest framework everywhere with no easy way to keep track of version, git has a mechanism for including code from other git repositories in your own known as submodules. In order to include the gtest framework as a submodule, you'll first need to [find the clone link for the respoitory from their GitHub repository](https://github.com/google/googletest) and then use the `git submodule` command to add it as a submodule to the system.
+
+```
+$ git submodule add https://github.com/google/googletest.git
+```
+
+This will create a new googletest folder which contains all the code from the gtest repository. If you run `git status` you should also see that the googletest folder has already been added for commiting, as well as a hidden .gitmodules file, which has the information for which submodules this repository should contain. 
+
+> Note: when we add the googletest repository as a submodule it automatically downloads the source code to our local machine, but adds a link to the repository in GitHub. If you download a project containing a submodule from GitHub (which you will likely do at some point for your assignment) you will need to add a `--recursive` flag to your `git clone` command to pull the submodule along with the repository (`git clone --recursive <github-repo-url>`). If you forget to pull recursively and need to pull the submodule after cloning you can use the command `git submodule update --init --recursive` within the newly clone repository to pull any missing submodules.
+
+Now we need to modify our CMakeLists.txt file so it knows to compile the gtest code along with our own code by adding the following:
+
+```
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+
+ADD_SUBDIRECTORY(googletest)
+
+SET(CMAKE_CXX_STANDARD 11)
+
+ADD_EXECUTABLE(c-echo
+    main.cpp
+)
+
+ADD_EXECUTABLE(test
+    test.cpp
+)
+
+TARGET_LINK_LIBRARIES(test gtest)
+TARGET_COMPILE_DEFINITIONS(test PRIVATE gtest_disable_pthreads=ON)
+```
+
+These changes do a few things for us. The first is the `ADD_SUBDIRECTORY` function, which makes CMake aware of the gtest framework. It will then look into that directory for another CMakeLists.txt file which will tell it how to compile that code and include it in our own. Next we have a `SET` function, which we use to set the C++ standard that we want to compile against to C++11. This is essentially equivalent to adding a `-std=c++11` flag to your g++ compilation. We also have a new `ADD_EXECUTABLE` line which requires a new test.cpp file. This test.cpp file is where we will write our tests and create a main specifically for running those tests. This new executable will just run the tests and won't run the normal program functionality, so we still need the old executable to be generated. Finally, we add a `TARGET_LINK_LIBRARIES` function, which links our test program to the gtest library, making gtest a dependency for the test executable (note that the name *gtest* is actually defined by the Google Unit Test Framework, not by us). Finally, we have a `TARGET_COMPILE_DEFINITIONS` function, which adds a compilation definition to the build, which in this case disables googletest from looking for the pthreads library which hammer doesn't have. This is equivalent to adding a `-Dgtest_disable_pthreads=ON` flag which is a compiler pre-processor option. If you are doing this lab on you local machine,  you may be able to remove this last line of the CMakeLists.txt file.
+
+## Writing a Unit Test
+
+Now, lets create the test.cpp file and create our first unit test:
+
+```c++
+#include "c-echo.h"
+
+#include "gtest/gtest.h"
+
+TEST(EchoTest, HelloWorld) {
+    char* test_val[3]; test_val[0] = "./c-echo"; test_val[1] = "hello"; test_val[2] = "world";
+    EXPECT_EQ("hello world", echo(3,test_val));
+}
+
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
+```
+
+We start by including our c-echo.h so we have access to the `echo` function that we want to test, and we also `#include` the gtest framework. The gtest inclusion doesn't reference the gtest.h file from the directory directly, but instead uses a special gtest/ directory which we have access to through the `TARGET_LINK_LIBRARIES` function in the CMake (notice it matches the gtest from that command). 
+
+After that we create our first unit test. There are lots of different types of tests that you can create using the gtest framework, and I suggest you read this [quick introduction to gtest guide](https://www.ibm.com/developerworks/aix/library/au-googletestingframework.html), and then reference this [gtest primer](https://github.com/google/googletest/blob/master/googletest/docs/primer.md) when you are looking for something more specific, in addition to the google test official documentation. The first test is defined with the `TEST` function, which takes a test set name (`EchoTest`) and a name for this specific test (`HelloWorld`). All tests with the same test set name will be grouped together in the output when the tests are run. In this test, we create a `char** test_val` with three values, which is the executable `./c-echo` followed by `hello world`. Remember that our function is programmed to skip the executable, so in order to test it properly we still need to pass the executable to the function. Finally, we create a new main which runs all the tests that we have written (this main is given in the documentation and you are unlikely to need to change it). 
+
+Now that we've modified our CMakeLists.txt, we'll need to generate a new Makefile before we can compile the tests. Run the following commands to generate a new Makefile, compile the new targets, and then run the tests:
+
+```
+$ cmake3 .
+$ make
+$ ./test
+```
+
+When you run the tests, you should see an output like the following:
+
+```
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from EchoTest
+[ RUN      ] EchoTest.HelloWorld
+.../test.cpp:8: Failure
+Expected equality of these values:
+  "hello world"
+  echo(3,test_val)
+    Which is: "hello world\n"
+[  FAILED  ] EchoTest.HelloWorld (0 ms)
+[----------] 1 test from EchoTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (0 ms total)
+[  PASSED  ] 0 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] EchoTest.HelloWorld
+
+ 1 FAILED TEST
+```
+
+Oops, we failed our first test. Lets take a look at the output and try and see why.
+
+```
+Expected equality of these values:
+  "hello world"
+  echo(3,test_val)
+    Which is: "hello world\n"
+```
+
+The problem is that we expected `hello world` to be returned, but we forgot that the function actually adds a newline to the end of the string so the prompt will go to the next line. At this point we have two options (1) if we actually want the function to return `hello world`, we need to modify the function or (2) if the function should actually return a newline then we need to change the test. In a test driven design methodology, we would actually write one or a small number of basic unit tests, then develop a small part of our system until we pass those unit tests, and then repeat that process until we've finish our function (and then we already have our unit tests). Here, the function echo should probably directly mimic the input so we don't actually want that newline in the function but instead in the main. Go ahead and modify the function in c-echo.h so it no longer returns the newline and instead add that newline to the main.cpp (this way we still get easy to read output without it affecting our function). Re-run the test to make sure you are now passing (since the tests don't run the other main, the added newline there won't be a problem for testing), you should see something like this:
+
+```
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from EchoTest
+[ RUN      ] EchoTest.HelloWorld
+[       OK ] EchoTest.HelloWorld (0 ms)
+[----------] 1 test from EchoTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (0 ms total)
+[  PASSED  ] 1 test.
+```
+
+> Make a commit here with the CMakeLists.txt, main.cpp, test.cpp, and c-echo.h file as well as the googletest and .gitmodules files
+
+## Testing Edge Cases
+
+The first test you've written represents the type of average case we would expect from the user, which are important to test. You also want to make sure you are testing edge cases, where the functionality of what you are testing may not be as obvious. For example, our echo function is designed to mimic exactly what is input so a blank input gets a blank response. Another developer may assume that no input is invalid and return some type of error. Lets create a unit test for an empty input, which tests that is equivalent to returning a blank.
+
+```c++
+TEST(EchoTest, EmptyString) {
+    char* test_val[1]; test_val[0] = "./c-echo";
+    EXPECT_EQ("", echo(1,test_val));
+}
+```
+
+This new test makes two valuable additions to our system. The first is if another developer modifies the functionality of our echo function to do anything on a blank input except return nothing (throw an error for example) then they will fail the test and have to consciously make the decision about changing to test to match the function, or changing the function to meet the test (as you did earlier). The second thing we gain is the usage of tests as a form of documentation. If I am wondering what the result of zero input to the function is, I can check the tests and assuming there is a test with that edge case I can see what result the tests expects. In this way a comprehensive set of tests is its own form of documentation (although you should consider this a supplement form of documentation, not a replacement for actual documentation).
+
+## Submission 2
+
+Create three test cases in addition to the two we've already created, and commit it all to your repository as your submission.
+
+
+

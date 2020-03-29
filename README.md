@@ -509,6 +509,21 @@ This will push all the commits you've made since your last push assuming there h
 
 # Part 2: Unit Testing in C++
 
+## Preparation
+In this section, you are suggested to work on your repository in a different folder by following the instructions described below:
+
+* First you need to move out of the current directory by typing `cd ..`, or directly move to the home folder by `cd ~`.
+
+* You will need to rename the existing lab1 directory to avoid conflicts since you need to clone your repository again. You can rename your folder by `mv <current_lab1_folder> ./lab-01-part1`
+
+* Then you need to clone the lab1 repository again from your Github using the command: `git clone <github-url>`. Please replace `<github-url>` to the on you used before. Note that you can also specify the target folder when cloning by `git clone <github-url> <destination_folder>`
+
+* Next, fo into the newly created lab-01 folder by `cd <your_lab01_directory_path>`.
+
+The above instructions ensure your work for this part is done separately in another directory.
+
+## Unit testing
+
 Testing is a very important part of the software development process that is often overlooked in university curriculum. We know because **Google told us specifically it was something they found lacking in their incoming interns and new grad hires**, so we suggest you take this unit seriously along with the testing you will be doing for your projects (and add it to your resume when you apply for internships).
 
 Because C++ is a compiled language, it is fairly difficult to create unit tests for individual classes and functions because they need their own main for executing the test combined with the function or class being tested. Rather than try and invent our own testing paradigms/frameworks, we are going to use the fairly standard [Google Unit Test Framework](https://github.com/google/googletest) (gtest) for C++. While it's tempting to think we are using this because Google told us we needed more testing in the curriculum, it is actually because the author ([@brrcrites](https://github.com/brrcrites)) uses it in his research, and it has become the de-facto standard testing framework for C++ code.

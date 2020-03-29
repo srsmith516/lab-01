@@ -528,33 +528,9 @@ Testing is a very important part of the software development process that is oft
 
 Because C++ is a compiled language, it is fairly difficult to create unit tests for individual classes and functions because they need their own main for executing the test combined with the function or class being tested. Rather than try and invent our own testing paradigms/frameworks, we are going to use the fairly standard [Google Unit Test Framework](https://github.com/google/googletest) (gtest) for C++. While it's tempting to think we are using this because Google told us we needed more testing in the curriculum, it is actually because the author ([@brrcrites](https://github.com/brrcrites)) uses it in his research, and it has become the de-facto standard testing framework for C++ code.
 
-In this lab, we will use the c-echo program as the test example. Our c-echo program prints a space after every word in `argc`. 
 
-```c++
-#include <iostream>
 
-int main(int argv, char** argc) {
-    // Skip the first argc index because its the program
-    for(int i = 1; i < argv; i++) {
-        std::cout << argc[i];
-        // Print a whitespace after all but the last iteration
-        if(i < argv - 1) {
-            std::cout << " ";
-        }
-    }
-    std::cout << std::endl;
-}
-```
-
-Compile this program as `c-echo` (`g++ c-echo.cpp -o c-echo`) and test it with some different inputs to verify that it prints whatever is passed to it as command line input.
-
-Since we are going to write unit tests for this program we first want to break the project up into different modules. This is necessary in our case because currently we have our program implmeneted directly in main but the google test framework will require us to write a special main (covered below) used by them to create a test executable which we will run to test our code. Note that for this small example we will only be creating a single function as our module for testing, but the principles are the same if you have a single module or hundreds. Lets modify our c-echo.cpp file, and rename it to c-echo.h. If we rename and then modify c-echo.cpp without telling git that we are going to rename it, then it's going to think we removed one file and created an entirely new one. This can make the commits very hard to read (and review very difficult), so we should rename the file using git itself:
-
-```
-$ git mv c-echo.cpp c-echo.h
-```
-
-If you run `git status` you should see that git has logged the file rename. Now, lets turn c-echo.h into a function rather than just a main:
+Since we are going to write unit tests for this program we first want to break the project up into different modules. This is necessary in our case because currently we have our program implmeneted directly in main but the google test framework will require us to write a special main (covered below) used by them to create a test executable which we will run to test our code. Note that for this small example we will only be creating a single function as our module for testing, but the principles are the same if you have a single module or hundreds. Lets create our c-echo.h file as below:
 
 ```c++
 #include <iostream>
@@ -572,7 +548,7 @@ std::string echo(int length, char** chars) {
 }
 ```
 
-Notice that now instead of printing directly, we are generating a string which we will print to standard output in the main. The code has been slightly modified to allow it to return a string, for example it adds a `\n` character to the end rather than the `std::endl` it used before, but the functionality is the same. Now, let's create a new main.cpp file so we can run the program like we did before:
+Notice that now instead of printing directly, we are generating a string which we will print to standard output in the main. The code has been slightly modified to allow it to return a string, for example it adds a `\n` character to the end rather than the `std::endl` it used before, but the functionality is the same. Now, let's create a `new` main.cpp file (Note this main.cpp is different from the previous one. You can either delete or overwrite the previous main.cpp) so we can run the program like we did before:
 
 ```c++
 #include "c-echo.h"
@@ -581,6 +557,10 @@ int main(int argv, char** argc) {
     std::cout << echo(argv, argc);
 }
 ```
+
+Run the following commands to allow git to track these files:
+* `git add c-echo.h`    
+* `git add main.cpp`
 
 One of the benefits of writing unit tests is that it forces you to think about how to subdivide a problem across a number of different classes and functions, because those become your testable units. The main itself cannot be unit tested since a different main will be needed to compile the unit tests. This is why in most large programming projects the only thing the main does is call a different function or create an object and call a method on that object.
 

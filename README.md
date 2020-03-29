@@ -743,7 +743,7 @@ TEST(EchoTest, EmptyString) {
 
 This new test makes two valuable additions to our system. The first is if another developer modifies the functionality of our echo function to do anything on a blank input except return nothing (throw an error for example) then they will fail the test and have to consciously make the decision about changing to test to match the function, or changing the function to meet the test (as you did earlier). The second thing we gain is the usage of tests as a form of documentation. If I am wondering what the result of zero input to the function is, I can check the tests and assuming there is a test with that edge case I can see what result the tests expects. In this way a comprehensive set of tests is its own form of documentation (although you should consider this a supplement form of documentation, not a replacement for actual documentation).
 
-## Submission 2
+## Submission
 
 Create three test cases in addition to the two we've already created, and commit it all to your repository as your submission.
 

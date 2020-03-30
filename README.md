@@ -516,7 +516,7 @@ In this section, you are suggested to work on your repository in a different fol
 
 * You will need to rename the existing lab1 directory to avoid conflicts since you need to clone your repository again. You can rename your folder by `mv <current_lab1_folder> ./lab-01-part1`
 
-* Then you need to clone the lab1 repository again from your Github using the command: `git clone <github-url>`. Please replace `<github-url>` to the on you used before. Note that you can also specify the target folder when cloning by `git clone <github-url> <destination_folder>`
+* Then you need to clone the lab1 repository again from your Github using the command: `git clone <github-url>`. Please replace `<github-url>` to the one you used before. Note that you can also specify the target folder when cloning by `git clone <github-url> <destination_folder>`
 
 * Next, fo into the newly created lab-01 folder by `cd <your_lab01_directory_path>`.
 

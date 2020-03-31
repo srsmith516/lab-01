@@ -365,7 +365,7 @@ We don’t want Git to continue to tell us that `area_calculator` is untracked, 
 ```sh
 git add header/rectangle.hpp
 git add src/rectangle.cpp
-git add src/main.cpp
+git add src/main1.cpp
 git add src/new_main.cpp
 git add .gitignore
 ```
@@ -404,7 +404,7 @@ My first commit
 # Changes to be committed:
 #   added:   header/rectangle.hpp
 #   added:   src/rectangle.cpp
-#   added:   src/main.cpp
+#   added:   src/main1.cpp
 #   added:   .gitignore
 #
 # Changes not staged for commit:
@@ -433,7 +433,7 @@ Add rectangle area program
 # Changes to be committed:
 #   added:   header/rectangle.hpp
 #   added:   src/rectangle.cpp
-#   added:   src/main.cpp
+#   added:   src/main1.cpp
 #   added:   .gitignore
 #
 # Changes not staged for commit:
@@ -446,7 +446,7 @@ After editing the file with the above message, exit your editor and the commit s
 
 > Note: The -m flag should only be used when writing very short commit messages, and otherwise you should use the interactive mode to have both a subject and commit body. For some more tips on writing effective git commit messages, read [this blog post](https://chris.beams.io/posts/git-commit/).
 
-Let's make one more commit so we'll have something to play with. Update your `main.cpp` to calculate one more rectangle's area:
+Let's make one more commit so we'll have something to play with. Update your `main1.cpp` to calculate one more rectangle's area:
 
 ```c++
 #include <iostream>
@@ -480,10 +480,10 @@ Uh oh! We got an error message saying: "no changes added to the commit".
 
 Every time you modify a file, you must explicitly tell Git to add the file again if you want that file included in the commit. This is because sometimes programmers want to commit only some of the modified files. 
 
-Run `git status` to see the files that are currently being tracked. We can add the changes to the `main.cpp` file, and verify it is added, with:
+Run `git status` to see the files that are currently being tracked. We can add the changes to the `main1.cpp` file, and verify it is added, with:
 
 ```sh
-$ git add main.cpp
+$ git add main1.cpp
 $ git status
 ```
 
@@ -572,7 +572,7 @@ Before we can start actually writing the unit tests, there are a few changes we'
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 ADD_EXECUTABLE(area_calculator
-    src/main.cpp
+    src/main1.cpp
     src/rectangle.cpp
 )
 
@@ -620,7 +620,7 @@ ADD_SUBDIRECTORY(googletest)
 SET(CMAKE_CXX_STANDARD 11)
 
 ADD_EXECUTABLE(area_calculator
-    src/main.cpp
+    src/main1.cpp
     src/rectangle.cpp
 )
 

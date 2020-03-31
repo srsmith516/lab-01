@@ -112,7 +112,7 @@ alias hammer="ssh <your_CS_username>@hammer.cs.ucr.edu"
 
 ## Command Line Compilation
 
-GCC is the GNU project C Compiler and is one of the most used compilers for C code (macOS previously used GCC but not uses another compiler called Clang). It typically also comes with G++ which is a similar compiler for C++ code. The `g++` command invokes this compiler from the command line. To demonstrate how it works, go ahead and write a simple `hello world!` program using the command line editor of your choice (save the file as `main.cpp`):
+GCC is the GNU project C Compiler and is one of the most used compilers for C code (macOS previously used GCC but not uses another compiler called Clang). It typically also comes with G++ which is a similar compiler for C++ code. The `g++` command invokes this compiler from the command line. To demonstrate how it works, go ahead and write a simple `hello world!` program using the command line editor of your choice (save the file as `main1.cpp`):
 
 ```c++
 #include <iostream>
@@ -129,10 +129,10 @@ int main()
 Once finished make sure to save and quit out of your editor and then type the following command in the terminal:
 
 ```sh
-g++ -std=c++11 main.cpp
+g++ -std=c++11 main1.cpp
 ```
 
-> Note: Most shells support autocompletion when typing out commands, and is useful when you have a command with many arguments to type out. For example, start typing `g++ -std=c++11 ma`. After typing `a`, press the Tab key. Bash (the shell you are currently using in `hammer`) should autocomplete to `main.cpp`.
+> Note: Most shells support autocompletion when typing out commands, and is useful when you have a command with many arguments to type out. For example, start typing `g++ -std=c++11 ma`. After typing `a`, press the Tab key. Bash (the shell you are currently using in `hammer`) should autocomplete to `main1.cpp`.
 
 If successful, you shouldn't see any output (if not successful, fix your errors until you are able to compile your program). A quick `ls` will show that a new file named `a.out` was generated, which is the executable generated from your program. You execute this executable (also known as a binary) with `./a.out`. Note that the `.` in this case is the current directory and is required [primarily for security reasons](https://stackoverflow.com/questions/6331075/why-do-you-need-dot-slash-before-executable-or-script-name-to-run-it-in-bas). When you execute your program you should see "hello world!" printed out to the terminal.
 
@@ -141,7 +141,7 @@ If successful, you shouldn't see any output (if not successful, fix your errors 
 Most of the time you want to give your program a recognizable name. Adding the `-o` "output" flag followed by a name and the executable will output with that name. Go ahead and run `rm a.out` to delete the old executable, then run the following command:
 
 ```sh
-g++ -std=c++11 -o hello_world main.cpp
+g++ -std=c++11 -o hello_world main1.cpp
 ```
 
 You have now created an executable called `hello_world` and can execute it by typing `./hello_world`.
@@ -187,7 +187,7 @@ int Rectangle::area() {
 }
 ```
 
-Finally, overwrite your current `main.cpp` with following code:
+Finally, overwrite your current `main1.cpp` with following code:
 
 ```c++
 #include <iostream>
@@ -205,12 +205,12 @@ int main()
 }
 ```
 
-The `main.cpp` file was not created in the `src` directory so we should move it there. You can use the command `mv <source> <destination>` to move a file from `<source>` to `<destination>` where the `<source>` is a file and the `<destination>` is a file or folder. From your home directory where `main.cpp` should be use `mv main.cpp src/` to move `main.cpp` into the `src` directory. If you added a filename after `src/` in the destination part of the move command, it would also rename the file. If its omitted, it will use the source files name (which is fine in this case). The `mv` move command is used for both moving files and renaming them. 
+The `main1.cpp` file was not created in the `src` directory so we should move it there. You can use the command `mv <source> <destination>` to move a file from `<source>` to `<destination>` where the `<source>` is a file and the `<destination>` is a file or folder. From your home directory where `main1.cpp` should be use `mv main1.cpp src/` to move `main1.cpp` into the `src` directory. If you added a filename after `src/` in the destination part of the move command, it would also rename the file. If its omitted, it will use the source files name (which is fine in this case). The `mv` move command is used for both moving files and renaming them. 
 
 We are now ready to compile and run! Go ahead and run the following command (notice that the `g++` command can take relative paths, so the command below is being run from your home directory):
 
 ```sh
-g++ -std=c++11 -o area_calculator src/main.cpp src/rectangle.cpp
+g++ -std=c++11 -o area_calculator src/main1.cpp src/rectangle.cpp
 ```
 
 Notice that we didn't include the header file `rectangle.hpp` as an argument. The `#include "rectangle.hpp"` within `rectangle.cpp` tells the compiler to include the header for us (and is why the include guards are necessary). Nice! Go ahead and run `./area_calculator`. You should see `Rectangle area: 12` as output.
@@ -228,11 +228,11 @@ target: dependencies ...
 Let's go ahead and create a `Makefile` for our program above. Add the following rule into the `Makefile`:
 
 ```make
-area_calculator: src/main.cpp src/rectangle.cpp
-    g++ -o area_calculator src/main.cpp src/rectangle.cpp
+area_calculator: src/main1.cpp src/rectangle.cpp
+    g++ -o area_calculator src/main1.cpp src/rectangle.cpp
 ```
 
-Now go ahead and run `make` in your terminal and you should see the rule's command displayed as output. Using `make` allows you to save lots of time typing out compilations commands so you don't need to keep entering `g++ -o area_calculator main.cpp rectangle.cpp` over and over again when making edits to the source files. It also allows you to create multiple executables from a single command. However, we won't be using Make directly in this course but instead a more powerful system.
+Now go ahead and run `make` in your terminal and you should see the rule's command displayed as output. Using `make` allows you to save lots of time typing out compilations commands so you don't need to keep entering `g++ -o area_calculator main1.cpp rectangle.cpp` over and over again when making edits to the source files. It also allows you to create multiple executables from a single command. However, we won't be using Make directly in this course but instead a more powerful system.
 
 ### CMake
 
@@ -242,7 +242,7 @@ Now go ahead and run `make` in your terminal and you should see the rule's comma
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 ADD_EXECUTABLE(area_calculator
-    src/main.cpp
+    src/main1.cpp
     src/rectangle.cpp
 )
 ```
@@ -262,7 +262,7 @@ CMake should now have generated a new `Makefile`, so execute the `Makefile` with
 ```sh
 $ make
 Scanning dependencies of target area_calculator
-[ 33%] Building CXX object CMakeFiles/area_calculator.dir/src/main.cpp.o
+[ 33%] Building CXX object CMakeFiles/area_calculator.dir/src/main1.cpp.o
 [ 66%] Building CXX object CMakeFiles/area_calculator.dir/src/rectangle.cpp.o
 [100%] Linking CXX executable area_calculator
 [100%] Built target area_calculator
@@ -548,7 +548,7 @@ std::string echo(int length, char** chars) {
 }
 ```
 
-Notice that now instead of printing directly, we are generating a string which we will print to standard output in the main. The code has been slightly modified to allow it to return a string, for example it adds a `\n` character to the end rather than the `std::endl` it used before, but the functionality is the same. Now, let's create a `new` main.cpp file (Note this main.cpp is different from the previous one. You can either delete or overwrite the previous main.cpp) so we can run the program like we did before:
+Notice that now instead of printing directly, we are generating a string which we will print to standard output in the main. The code has been slightly modified to allow it to return a string, for example it adds a `\n` character to the end rather than the `std::endl` it used before, but the functionality is the same. Now, let's create a `new` main2.cpp file (Note this main2.cpp is different from the previous main1.cpp from part1. Make sure the name of both the files are different to avoid the conflicts during compilation:
 
 ```c++
 #include "c-echo.h"
@@ -560,19 +560,24 @@ int main(int argv, char** argc) {
 
 Run the following commands to allow git to track these files:
 * `git add c-echo.h`    
-* `git add main.cpp`
+* `git add main2.cpp`
 
 One of the benefits of writing unit tests is that it forces you to think about how to subdivide a problem across a number of different classes and functions, because those become your testable units. The main itself cannot be unit tested since a different main will be needed to compile the unit tests. This is why in most large programming projects the only thing the main does is call a different function or create an object and call a method on that object.
 
 ## CMake
 
-Before we can start actually writing the unit tests, there are a few changes we'll need to make to our repository. The first issue is that in order to use gtest is we'll need to change from hand compiling our program to using a build system. Gtest doesn't support the basic make build system, but instead supports CMake. As with the last lab, start by creating the following CMakeLists.txt file:
+Before we can start actually writing the unit tests, there are a few changes we'll need to make to our repository. The first issue is that in order to use gtest is we'll need to change from hand compiling our program to using a build system. Gtest doesn't support the basic make build system, but instead supports CMake. As with the last part, start by updating the following CMakeLists.txt file:
 
 ```
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+ADD_EXECUTABLE(area_calculator
+    src/main.cpp
+    src/rectangle.cpp
+)
+
 ADD_EXECUTABLE(c-echo
-    main.cpp
+    main2.cpp
 )
 ```
 
@@ -591,7 +596,7 @@ c-echo
 
 Now that we have a function that we can create unit tests for specifically, and can use CMake to build it, we can now add the gtest framework and start writing our tests.
 
-> Make a commit here with CMakeLists.txt, c-echo.h, main.cpp, and the updated .gitignore.
+> Make a commit here with CMakeLists.txt, c-echo.h, main2.cpp, and the updated .gitignore.
 
 ## Git Submodules
 
@@ -614,8 +619,13 @@ ADD_SUBDIRECTORY(googletest)
 
 SET(CMAKE_CXX_STANDARD 11)
 
+ADD_EXECUTABLE(area_calculator
+    src/main.cpp
+    src/rectangle.cpp
+)
+
 ADD_EXECUTABLE(c-echo
-    main.cpp
+    main2.cpp
 )
 
 ADD_EXECUTABLE(test
@@ -693,7 +703,7 @@ Expected equality of these values:
     Which is: "hello world\n"
 ```
 
-The problem is that we expected `hello world` to be returned, but we forgot that the function actually adds a newline to the end of the string so the prompt will go to the next line. At this point we have two options (1) if we actually want the function to return `hello world`, we need to modify the function or (2) if the function should actually return a newline then we need to change the test. In a test driven design methodology, we would actually write one or a small number of basic unit tests, then develop a small part of our system until we pass those unit tests, and then repeat that process until we've finish our function (and then we already have our unit tests). Here, the function echo should probably directly mimic the input so we don't actually want that newline in the function but instead in the main. Go ahead and modify the function in c-echo.h so it no longer returns the newline and instead add that newline to the main.cpp (this way we still get easy to read output without it affecting our function). Re-run the test to make sure you are now passing (since the tests don't run the other main, the added newline there won't be a problem for testing), you should see something like this:
+The problem is that we expected `hello world` to be returned, but we forgot that the function actually adds a newline to the end of the string so the prompt will go to the next line. At this point we have two options (1) if we actually want the function to return `hello world`, we need to modify the function or (2) if the function should actually return a newline then we need to change the test. In a test driven design methodology, we would actually write one or a small number of basic unit tests, then develop a small part of our system until we pass those unit tests, and then repeat that process until we've finish our function (and then we already have our unit tests). Here, the function echo should probably directly mimic the input so we don't actually want that newline in the function but instead in the main. Go ahead and modify the function in c-echo.h so it no longer returns the newline and instead add that newline to the main2.cpp (this way we still get easy to read output without it affecting our function). Re-run the test to make sure you are now passing (since the tests don't run the other main, the added newline there won't be a problem for testing), you should see something like this:
 
 ```
 [==========] Running 1 test from 1 test case.
@@ -708,7 +718,7 @@ The problem is that we expected `hello world` to be returned, but we forgot that
 [  PASSED  ] 1 test.
 ```
 
-> Make a commit here with the CMakeLists.txt, main.cpp, test.cpp, and c-echo.h file as well as the googletest and .gitmodules files
+> Make a commit here with the CMakeLists.txt, main2.cpp, test.cpp, and c-echo.h file as well as the googletest and .gitmodules files
 
 ## Testing Edge Cases
 
@@ -726,6 +736,3 @@ This new test makes two valuable additions to our system. The first is if anothe
 ## Submission
 
 Create three test cases in addition to the two we've already created, and commit it all to your repository as your submission.
-
-
-

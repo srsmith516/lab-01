@@ -1,8 +1,10 @@
 area_calculator
-bigger_area_calculator
 hello_world
+<<<<<<< HEAD
 cmake_install.cmake
 Makefile
 CMakeFiles/
 CMakeCache.txt
 c-echo
+=======
+>>>>>>> 70807ebe405ef706ffcb185fcb0d5230e0b98b06

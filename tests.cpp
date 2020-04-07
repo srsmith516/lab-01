@@ -19,12 +19,12 @@ TEST(EchoTest, Newline) {
 
 TEST(EchoTest, Backspace) {
 	char* test_val[2]; test_val[0] = "./c-echo"; test_val[1] = "\b";
-	EXPECT_EQ("\b", echo(2, test_val));
+	EXPECT_EQ("\b", echo(2,test_val));
 }
 
 TEST(EchoTest, Tab) {
-	char* test_val[2]; test_val[0] = "./c-echo"; test_val[1] = "\t";
-	EXPECT_EQ("\t", echo(2, test_val));
+	char* test_val[3]; test_val[0] = "./c-echo"; test_val[1] = "\t"; test_val[2] = " + ";
+	EXPECT_EQ("\t  + ", echo(3,test_val));
 }
 
 int main(int argc, char **argv) {
